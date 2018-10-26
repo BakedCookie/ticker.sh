@@ -2,9 +2,15 @@
 set -e
 
 LANG=en_US.UTF-8
-LC_NUMERIC=en_US.UTF-8
 
 SYMBOLS=("$@")
+
+PG_break=85.52
+VZ_break=53.73
+XLNX_break=75.30
+LUV_break=47.10
+AMD_break=15.71
+
 
 if ! $(type jq > /dev/null 2>&1); then
   echo "'jq' is not in the PATH. (See: https://stedolan.github.io/jq/)"
@@ -70,7 +76,25 @@ for symbol in $(IFS=' '; echo "${SYMBOLS[*]}"); do
     color=$COLOR_GREEN
   fi
 
+
   printf "%-10s$COLOR_BOLD%8.2f$COLOR_RESET" $symbol $price
   printf "$color%10.2f%12s$COLOR_RESET" $diff $(printf "(%.2f%%)" $percent)
+  
+  put=1
+  call=0
+
+  pos_variable=`echo ${symbol}_break`
+  eval "position=\$$pos_variable"
+  check=`echo $price'>'$position | bc -l`
+  if [ "$check" == "$put" ]; then
+	  co=$COLOR_RED
+	  diff=$(echo "($position - $price)*100 / ($position)" | bc -l)
+  else
+	  co=$COLOR_GREEN
+	  diff=$(echo "($price - $position)*100 / ($position)" | bc -l)
+  fi
+  printf ",  $co%+6.2f%%$COLOR_RESET from %.2f" $diff $position
+
   printf " %s\n" "$nonRegularMarketSign"
+
 done
