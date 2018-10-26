@@ -5,11 +5,11 @@ LANG=en_US.UTF-8
 
 SYMBOLS=("$@")
 
-PG_break=85.52
-VZ_break=53.73
-XLNX_break=75.30
-LUV_break=47.10
-AMD_break=15.71
+PG_break=11.00
+VZ_break=10.00
+XLNX_break=15.00
+LUV_break=14.00
+AMD_break=13.00
 
 
 if ! $(type jq > /dev/null 2>&1); then
